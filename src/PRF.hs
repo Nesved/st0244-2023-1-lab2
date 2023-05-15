@@ -29,7 +29,7 @@ addNat n m = recNat m addOne n
   where addOne :: Nat -> Nat -> Nat
         addOne _ acc = Succ acc
 
--- Implementación de la función resta
+-- Implementación de la función division
 divNat :: Nat -> Nat -> Nat
 divNat _ Zero = error "Error: división por cero"
 divNat n m = recNat Zero divStep n
