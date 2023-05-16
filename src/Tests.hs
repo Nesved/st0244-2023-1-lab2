@@ -1,34 +1,43 @@
+-- The PRF, Test.QuickCheck.Instances.Natural, -
+-- and GHC.Natural(Natural)ibraries are imported.
+
+-- These libraries provide functionalities related to property testing -
+-- and manipulation of natural numbers.
+
+-- The Main module performs tests using the PRF and Test.QuickCheck libraries.
+
 module Main where
 import PRF
 import Test.QuickCheck.Instances.Natural ()
 import GHC.Natural(Natural)
 import Test.QuickCheck
 
--- El sucesor de un número natural es igual a ese número más uno
-prop_succNat :: Natural -> Bool
-prop_succNat n = natToNatural (succNat n') == n + 1
+-- The double of a natural number is equal to the sum of the number with itself
+-- The double of n is equal to n + n.
+prop_doubleNat :: Natural -> Bool
+prop_doubleNat n = natToNatural (doubleNat n') == n + n
   where
     n' :: Nat
     n' = naturalToNat n
 
--- La suma de n y m es igual a la suma de m y n
+-- Check that the sum of two natural numbers is commutative.
+-- The sum of n and m is equal to the sum of m and n.
 prop_comm_addNat :: Natural -> Natural -> Bool
-prop_comm_addNat n m = natToNatural(addNat n' m') == n + m
+prop_comm_addNat n m = natToNatural(addNat n' m') == m + n
   where
     n', m':: Nat
     m' = naturalToNat m
     n' = naturalToNat n
 
--- La división de n entre m da como resultado un cociente y un residuo que, al multiplicarse por m y sumarse el residuo, se obtiene n nuevamente.
-prop_divNat :: Natural -> Natural -> Property
-prop_divNat n m =
-  m /= 0 ==> natToNatural (divNat n' m') * m + natToNatural (modNat n' m') == n
+-- Application of identity. any natural number should return the same number.
+prop_identity :: Natural -> Bool
+prop_identity n = natToNatural (identity n') == n
   where
-    n', m' :: Nat
+    n' :: Nat
     n' = naturalToNat n
-    m' = naturalToNat m
 
--- La multiplicación de n y m es igual a la multiplicación de m y n
+-- Verify that the multiplication of two natural numbers is commutative.
+-- The multiplication of n and m is equal to the multiplication of m and n.
 prop_comm_mulNat :: Natural -> Natural -> Bool
 prop_comm_mulNat n m = natToNatural(mulNat n' m') == m * n
   where
@@ -36,22 +45,23 @@ prop_comm_mulNat n m = natToNatural(mulNat n' m') == m * n
     m' = naturalToNat m
     n' = naturalToNat n
 
--- La potencia de n elevado a 0 siempre es 1
---prop_powNat_zero :: Natural -> Bool
---prop_powNat_zero n = natToNatural(powNat n' Zero) == n
---  where
---    n':: Nat
---    n' = naturalToNat n
+-- Verify that the predecessor of a natural number is equal to n - 1.
+-- If the number is zero, consider it true.
+-- The predecessor of n is equal to n - 1.
+prop_predNat :: Natural -> Bool
+prop_predNat n
+  | n == 0 = True
+  | otherwise = natToNatural (predNat n') == n - 1
+  where
+    n' :: Nat
+    n' = naturalToNat n
 
-
--- La potencia de n elevado a 1 siempre es n
-prop_powNat_one :: Nat -> Bool
-prop_powNat_one n = powNat n (Succ Zero) == n
-
+--The main function.
+--Tests are executed using the quickCheck function for each of the properties.
 main :: IO ()
 main = do
-  quickCheck prop_succNat
+  quickCheck prop_doubleNat
   quickCheck prop_comm_addNat
-  quickCheck prop_subNat_if
+  quickCheck prop_identity
   quickCheck prop_comm_mulNat
---  quickCheck prop_powNat_one
+  quickCheck prop_predNat
