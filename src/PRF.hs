@@ -1,6 +1,6 @@
 module PRF where
 
-import Numeric.Natural (Natural)
+import GHC.Natural (Natural)
 
 data Nat = Zero | Succ Nat deriving (Show, Eq)
 
@@ -29,13 +29,12 @@ addNat n m = recNat m addOne n
   where addOne :: Nat -> Nat -> Nat
         addOne _ acc = Succ acc
 
--- Implementación de la función division
-divNat :: Nat -> Nat -> Nat
-divNat _ Zero = error "Error: división por cero"
-divNat n m = recNat Zero divStep n
+-- Implementación de la función de identidad
+identity :: Nat -> Nat
+identity n = recNat Zero successor n
   where
-    divStep :: Nat -> Nat -> Nat
-    divStep _ acc = if acc < m then acc else Succ (subNat acc m)
+    successor :: Nat -> Nat -> Nat
+    successor _ acc = Succ acc
 
 -- Implementación de la función multiplicación
 mulNat :: Nat -> Nat -> Nat
